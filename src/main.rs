@@ -5,9 +5,19 @@ use panic_itm as _;
 
 use stm32f1xx_hal as _;
 
-use cortex_m_rt::entry;
+use cortex_m::asm::wfi;
+use rtfm::app;
 
-#[entry]
-fn main() -> ! {
-    loop {}
-}
+#[app(device = stm32f1xx_hal::pac)]
+const APP: () = {
+    #[init]
+    fn init() {}
+
+    #[idle]
+    fn idle() -> ! {
+        loop {
+            // Waits for interrupt
+            wfi();
+        }
+    }
+};
